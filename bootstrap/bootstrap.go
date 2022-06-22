@@ -9,17 +9,21 @@ import (
   _ "carlamissiona/golang-barbers/pkg/database"
   "carlamissiona/golang-barbers/pkg/router"
   "log" 
-) 
+  // "net/http"
+)   
  
 func NewApplication() *fiber.App {
   
-  // _ = database.SetupDatabase()
-  log.Println("db_instance")
+  // _ = database.SetupDatabase()      
+  log.Println("db_instanceh")   
 	engine := html.New("./templates", ".html")
- 
   
+ //  fs := http.FileServer(http.Dir("./static"))
+	// http.Handle("/static", fs)
+
+   
   app := fiber.New(fiber.Config{Views: engine})
-  app.Static("/", "../assets")
+  app.Static("/", "./assets")
   log.Println("assets") 
   app.Use(recover.New()) 
 	app.Use(logger.New())
@@ -33,3 +37,6 @@ func NewApplication() *fiber.App {
   
 }
 
+// chat - click button type - send - send to chatroom 
+// display chatroom
+// usermgmt
