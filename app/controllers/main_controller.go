@@ -16,7 +16,7 @@ import (
 var db *sql.DB
 
 func Initcontroller() {
-	log.Println("Higshsss!")
+	log.Println("InitInitCon!")
 	db = database.SetupDatabase()
 }
 
@@ -33,7 +33,8 @@ func RenderHome(c *fiber.Ctx) error {
 		rows.Scan(&res)
 		todos = append(todos, res)
 	}
-	log.Println(todos)
+	  
+   log.Println(todos);log.Println("todos");log.Println("todos");log.Println("todos")
 	return c.Render("index", fiber.Map{
 		"FiberTitle": "Hello From Fiber Html Engine",
 	}, "layouts/htm")
