@@ -2,7 +2,7 @@ package main
 
 import (
 	  
-	"carlamissiona/golang-barbers/bootstrap"
+ "carlamissiona/golang-barbers/bootstrap"
   "log"
 )
 

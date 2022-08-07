@@ -5,18 +5,17 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/gofiber/template/html"  
-  _ "carlamissiona/golang-barbers/pkg/database"
-  "carlamissiona/golang-barbers/pkg/router"
-  "log" 
+	"github.com/gofiber/template/html"   
+    "carlamissiona/golang-barbers/pkg/router"
+    "log"  
+	_ "github.com/lib/pq"
   // "net/http"
 )   
+
  
 func NewApplication() *fiber.App {
   
-  // _ = database.SetupDatabase()      
-  log.Println("db_instanceh")   
-	engine := html.New("./templates", ".html")
+  engine := html.New("./templates", ".html")
   
  //  fs := http.FileServer(http.Dir("./static"))
 	// http.Handle("/static", fs)
@@ -26,9 +25,9 @@ func NewApplication() *fiber.App {
   app.Static("/", "./assets")
   log.Println("assets") 
   app.Use(recover.New()) 
-	app.Use(logger.New())
+  app.Use(logger.New())
   
-	app.Get("/dashboard", monitor.New())
+  app.Get("/dashboard", monitor.New())
   var r router.Router = nil
   r = router.NewHttpRouter()
   r.InstallRouter(app)

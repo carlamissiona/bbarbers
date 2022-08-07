@@ -13,12 +13,14 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func SetupDatabase() ( *sql.DB ) {
+
+func SetupDatabase() *sql.DB {
 	var err error
 	err = godotenv.Load(".environ_development")
 	if err != nil {
 		log.Fatalf("failed reading env file: %v", err)
 	}
+
 	log.Println("failed reading env file: %v")
 	db_info := os.Getenv("POSTGRES_URL")
 	Database, err := sql.Open("postgres", db_info)
@@ -26,12 +28,21 @@ func SetupDatabase() ( *sql.DB ) {
 		panic(err)
 	}
 
-	defer Database.Close()
-
 	err = Database.Ping()
 	if err != nil {
 		log.Fatalf("failed No DB connection %v", err)
 	}
-  log.Println("db_instance")
-  return  Database
+
+	rows, err := Database.Query("SELECT * FROM bbr_articles")
+	defer rows.Close()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	log.Println("db_instance")
+	defer Database.Close()
+
+	log.Println(Database)
+	log.Println(rows)
+	return Database
 }
