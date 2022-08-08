@@ -8,8 +8,7 @@ import (
 
 func main() {
   
-	app := bootstrap.NewApplication()
-  
+	app := bootstrap.NewApplication()  
 	log.Fatal(app.Listen(":5000"))
  
 }
