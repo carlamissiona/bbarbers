@@ -23,17 +23,46 @@ func Initcontroller() {
 func RenderHome(c *fiber.Ctx) error {
 	var res string
 	var todos []string
-	rows, err := db.Query("SELECT * FROM bbr_articles")
+	rows, err := db.Query("SELECT   COUNT(title) FROM   bbr_articles;")
 	defer rows.Close()
 	if err != nil {
 		log.Fatalln(err)
 		c.JSON("An error occured")
 	}
 	for rows.Next() {
-		rows.Scan(&res)
+		rows.Scan(&res);log.Println("Record nos");
+		log.Printf(res);
 		todos = append(todos, res)
 	}
-	  
+
+	// SELECT   COUNT(column) FROM   table_name WHERE  condition;
+	rows, err = db.Query("Select * from public.bbr_articles")
+	defer rows.Close()
+	if err != nil {
+		log.Fatalln(err)
+		c.JSON("An error occured")
+	}
+
+	// strs := []string{"first", "second"}
+	// names := make([]interface{}, len(strs))
+	// for i, s := range strs {
+	// 	names[i] = s
+	// }
+	
+	rowPtr := make([]any,6)
+	for rows.Next() {
+		err := rows.Scan(rowPtr...)
+	    log.Printf('\n v%', err)
+		log.Println(rowPtr)
+	}
+	
+	err = db.Ping();log.Println("Passed Ping & Error after OS env file");
+	if err != nil {
+		log.Fatalf("failed No DB connection %v", err)
+	}
+
+
+
    log.Println(todos);log.Println("todos");log.Println("todos");log.Println("todos")
 	return c.Render("index", fiber.Map{
 		"FiberTitle": "Hello From Fiber Html Engine",

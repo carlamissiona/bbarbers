@@ -9,38 +9,37 @@ import (
 	"os"
 	_ "os"
 
-	"github.com/joho/godotenv"
+	_"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 
 func SetupDatabase() *sql.DB {
 	var err error
-	err = godotenv.Load(".environ_development")
+    urldb := os.Getenv("POSTGRES_URL")
 	if err != nil {
 		log.Fatalf("failed reading env file: %v", err)
 	}
-
-	log.Println("failed reading env file: %v")
-	db_info := os.Getenv("POSTGRES_URL")
-	Database, err := sql.Open("postgres", db_info)
+    
+	log.Println("OS env file")
+	Database, err := sql.Open("postgres", urldb)
 	if err != nil {
+		log.Println("Error after OS env file")
 		panic(err)
 	}
 
-	err = Database.Ping()
+	err = Database.Ping();log.Println("Passed Ping & Error after OS env file");
 	if err != nil {
 		log.Fatalf("failed No DB connection %v", err)
 	}
 
 	rows, err := Database.Query("SELECT * FROM bbr_articles")
-	defer rows.Close()
+	 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	log.Println("db_instance")
-	defer Database.Close()
+	log.Println("db_instance") 
 
 	log.Println(Database)
 	log.Println(rows)
