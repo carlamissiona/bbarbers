@@ -21,40 +21,40 @@ func Initcontroller() {
 }
 
 func RenderHome(c *fiber.Ctx) error {
-	var res string
-	var todos []string
-	rows, err := db.Query("SELECT   COUNT(title) FROM   bbr_articles;")
-	defer rows.Close()
-	if err != nil {
-		log.Fatalln(err)
-		c.JSON("An error occured")
-	}
-	for rows.Next() {
-		rows.Scan(&res);log.Println("Record nos");
-		log.Printf(res);
-		todos = append(todos, res)
-	}
-
-	// SELECT   COUNT(column) FROM   table_name WHERE  condition;
-	rows, err = db.Query("Select * from public.bbr_articles")
-	defer rows.Close()
-	if err != nil {
-		log.Fatalln(err)
-		c.JSON("An error occured")
-	}
-
-	// strs := []string{"first", "second"}
-	// names := make([]interface{}, len(strs))
-	// for i, s := range strs {
-	// 	names[i] = s
-	// }
+	 
 	
-	rowPtr := make([]any,6)
-	for rows.Next() {
-		err := rows.Scan(rowPtr...)
-	    log.Printf('\n v%', err)
-		log.Println(rowPtr)
+	// SELECT   COUNT(column) FROM   table_name WHERE  condition;
+	rows, err := db.Query("Select id , title, content, link, date_changed from public.bbr_articles")
+	 
+	if err != nil {
+		log.Fatalln(err)
+		c.JSON("An error occured")
 	}
+   
+	// var Id int32 ; 	var Title , Content, Link string; var Timechanged interface{};
+	type article struct {
+		Id          int32 
+		Title       string
+		Content     string  
+		Link        string  
+		Date_changed interface{}
+	  }
+	log.Println("Struct")
+	// database.OpeDatabase()
+	var articles []article
+    for rows.Next() {
+		var ar article
+		err := rows.Scan( &ar.Id , &ar.Title, &ar.Content, &ar.Link, &ar.Date_changed )
+        if err != nil {
+			log.Printf("Err! %v", err)
+        } 
+        articles = append(articles, ar)
+    }
+    if err := rows.Err(); err != nil {
+		log.Printf("Err! %v", err)
+    }
+	log.Println("Row! %v",articles[0]["id"])
+	 
 	
 	err = db.Ping();log.Println("Passed Ping & Error after OS env file");
 	if err != nil {
@@ -63,7 +63,7 @@ func RenderHome(c *fiber.Ctx) error {
 
 
 
-   log.Println(todos);log.Println("todos");log.Println("todos");log.Println("todos")
+    log.Println(articles);log.Println("todos");log.Println("todos");log.Println("todos")
 	return c.Render("index", fiber.Map{
 		"FiberTitle": "Hello From Fiber Html Engine",
 	}, "layouts/htm")

@@ -13,7 +13,16 @@ import (
 	_ "github.com/lib/pq"
 )
 
-
+func OpeDatabase() *sql.DB {
+	
+    urldb := os.Getenv("POSTGRES_URL")
+	Database, err := sql.Open("postgres", urldb)
+	if err != nil {
+		log.Println("Error after OS env file")
+		panic(err)
+	}
+	return Database
+}
 func SetupDatabase() *sql.DB {
 	var err error
     urldb := os.Getenv("POSTGRES_URL")
@@ -21,16 +30,22 @@ func SetupDatabase() *sql.DB {
 		log.Fatalf("failed reading env file: %v", err)
 	}
     
-	log.Println("OS env file")
+	log.Println("os env file")
 	Database, err := sql.Open("postgres", urldb)
 	if err != nil {
 		log.Println("Error after OS env file")
 		panic(err)
 	}
-
+	log.Printf("DB connection %v", Database)
 	err = Database.Ping();log.Println("Passed Ping & Error after OS env file");
 	if err != nil {
-		log.Fatalf("failed No DB connection %v", err)
+		 
+		Database, err = sql.Open("postgres", urldb)
+		if err != nil {
+			log.Println("Error after OS env file")
+		   
+		}
+		log.Printf("failed No DB connection %v", err)
 	}
 
 	rows, err := Database.Query("SELECT * FROM bbr_articles")
