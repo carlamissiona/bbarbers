@@ -53,19 +53,12 @@ func RenderHome(c *fiber.Ctx) error {
     if err := rows.Err(); err != nil {
 		log.Printf("Err! %v", err)
     }
-	log.Println("Row! %v",articles[0]["id"])
-	 
-	
-	err = db.Ping();log.Println("Passed Ping & Error after OS env file");
-	if err != nil {
-		log.Fatalf("failed No DB connection %v", err)
-	}
-
-
-
-    log.Println(articles);log.Println("todos");log.Println("todos");log.Println("todos")
+	log.Println("Row! %v", articles[0].Id)
+	log.Println("Row! %v", articles)
+	log.Println(articles);
 	return c.Render("index", fiber.Map{
-		"FiberTitle": "Hello From Fiber Html Engine",
+	   "Articles" : articles,
+	   "FiberTitle": "Hello From Fiber Html Engine",
 	}, "layouts/htm")
 }
 
