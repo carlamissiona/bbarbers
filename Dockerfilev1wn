@@ -1,0 +1,49 @@
+# Build Stage
+# First pull Golang image
+FROM golang:1.17-alpine as build-env
+
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		g++ \
+		gcc \
+		libc6-dev \
+		make \
+		pkg-config \
+	; \
+	rm -rf /var/lib/apt/lists/*
+
+
+# Set environment variable
+ENV PATH /usr/local/go/bin:$PATH
+ENV GOLANG_VERSION {{ .version }}
+ENV CMD_PATH main.go
+ENV APP_NAME busybarbers-web
+ENV POSTGRES_URL=postgres://bhdhkulz:2e6RiBcN2HpdIy9bGWvDSnkVH3NAUWw6@tyke.db.elephantsql.com/bhdhkulz
+ 
+# Copy application data into image
+COPY . $GOPATH/src/$APP_NAME
+WORKDIR $GOPATH/src/$APP_NAME
+ 
+RUN go mod tidy
+
+# Budild application
+RUN CGO_ENABLED=0 go build -v -o /$APP_NAME $GOPATH/src/$APP_NAME/$CMD_PATH
+ 
+# Run Stage
+FROM alpine:3.14
+ 
+# Set environment variable
+ENV APP_NAME busybarbers-web
+ENV POSTGRES_URL=postgres://bhdhkulz:2e6RiBcN2HpdIy9bGWvDSnkVH3NAUWw6@tyke.db.elephantsql.com/bhdhkulz
+ 
+RUN export POSTGRES_URL=postgres://bhdhkulz:2e6RiBcN2HpdIy9bGWvDSnkVH3NAUWw6@tyke.db.elephantsql.com/bhdhkulz
+ 
+# Copy only required data into this image
+COPY --from=build-env /$APP_NAME .
+
+# Expose application port
+EXPOSE 5000
+ 
+# Start app
+CMD ./$APP_NAME monolith
