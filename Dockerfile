@@ -1,14 +1,21 @@
-FROM golang:1.17-buster  
+FROM golang:1.18-bullseye
 
-WORKDIR /go
+ENV GO111MODULE=on
+
+ENV APP_HOME /go/src/
+
+RUN mkdir -p "$APP_HOME"
 
 ENV POSTGRES_URL=postgres://bhdhkulz:2e6RiBcN2HpdIy9bGWvDSnkVH3NAUWw6@tyke.db.elephantsql.com/bhdhkulz
-  
+
+WORKDIR "$APP_HOME"
+
 COPY . .
- 
+
 RUN go mod tidy
 
-RUN go build -v -o main
+RUN CGO_ENABLED=0 GOOS=linux go build
 
-CMD ["/go/main" "monolith"]
- 
+EXPOSE 5000
+
+ENTRYPOINT ["m"]
