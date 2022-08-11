@@ -26,7 +26,7 @@ func NewApplication(modeparam string) *fiber.App {
         app.Use(logger.New())
        
         log.Println(db)
-
+        log.Println("API ARTICLES")
         // app.Use(bearertoken.New(nil))
 
 
