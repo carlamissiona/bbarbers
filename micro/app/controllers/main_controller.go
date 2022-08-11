@@ -13,7 +13,17 @@ import (
 	"go.m3o.com/email"
 )
 
-var db *sql.DB
+
+type Article struct {
+ 
+	Title       string
+	Content     string  
+	Link        string  
+	Changed_on interface{}
+  }
+
+
+var db *sql.DB 
 
 func Initcontroller() {
 	log.Println("InitInitCon!")
@@ -23,36 +33,28 @@ func Initcontroller() {
 func RenderHome(c *fiber.Ctx) error {
 	 
 	 
-	rows, err := db.Query("Select article_id , title, content, link, changed_on from public.bbr_articles")
+	rows, err := db.Query("Select title, content, link, changed_on from public.bbr_articles")
 	 
 	if err != nil {
 		log.Fatalln(err)
 		c.JSON("An error occured")
 	}
-   
-	// var Id int32 ; 	var Title , Content, Link string; var Timechanged interface{};
-	type article struct {
-		Id          int32 
-		Title       string
-		Content     string  
-		Link        string  
-		Date_changed interface{}
-	  }
+    
 	log.Println("Struct")
 	// database.OpeDatabase()
-	var articles []article
+	var articles []Article
     for rows.Next() {
-		var ar article
-		err := rows.Scan( &ar.Id , &ar.Title, &ar.Content, &ar.Link, &ar.Date_changed )
+		var ar Article
+		err := rows.Scan( &ar.Title, &ar.Content, &ar.Link, &ar.Changed_on )
         if err != nil {
 			log.Printf("Err! %v", err)
         } 
-        articles = append(articles, ar)
+        articles = append(articles, ar) 
     }
     if err := rows.Err(); err != nil {
 		log.Printf("Err! %v", err)
     }
-	log.Println("Row! %v", articles[0].Id)
+	log.Println("Row! %v", articles[0].Link)
 	log.Println("Row! %v", articles)
 	log.Println(articles);
 	return c.Render("index", fiber.Map{
@@ -113,28 +115,20 @@ func RenderContactSubmit(c *fiber.Ctx) error {
 
 func GetApi_Articles(c *fiber.Ctx) error {
 	log.Println("API ARTICLES")
-	rows, err := db.Query("Select article_id , title, content, link, date_changed from public.bbr_articles")
+	rows, err := db.Query("Select article_id, title, content, link, changed_on from public.bbr_articles")
 	
 	if err != nil {
 		log.Fatalln(err)
 		c.JSON("An error occured")
 	}
     
-	type article struct {
-		Article_id  int32 
-		Title       string
-		Content     string  
-		Link        string  
-		Changed_on interface{}
-		Created_on interface{}
-	}
-	
 	log.Println("Struct")
 	// database.OpeDatabase()
-	var articles []article
+	var articles []Article
     for rows.Next() {
-		var ar article
-		err := rows.Scan( &ar.Article_id , &ar.Title, &ar.Content, &ar.Link, &ar.Changed_on )  
+		log.Printf("Print Next Row")
+		var ar Article
+		err := rows.Scan( &ar.Title, &ar.Content, &ar.Link, &ar.Changed_on )  
         if err != nil {
 			log.Printf("Err! %v", err)
         } 
@@ -145,11 +139,11 @@ func GetApi_Articles(c *fiber.Ctx) error {
     if err := rows.Err(); err != nil {
 		log.Printf("Err! %v", err)
     }
-	log.Println("Row! %v", articles[0].Article_id)
+	// log.Println("Row! %v", articles[0].Article_id)
 	log.Println("Row! %v", articles)
 	log.Println(articles);
 	type response struct {
-		articles      []article  
+		articles      []Article  
 		code          int32  
 	}
     
@@ -160,7 +154,7 @@ func GetApi_Articles(c *fiber.Ctx) error {
 
 	return c.JSON( resp )
 	 
-}
+}  
 
 func GetApi_Users(c *fiber.Ctx) error {
  

@@ -42,7 +42,6 @@ func NewApplication(modeparam string) *fiber.App {
 
         engine := html.New("./templates", ".html")
         
-        
         app := fiber.New(fiber.Config{Views: engine})
         app.Static("/", "./assets")
         log.Println("main monolith") 
@@ -56,6 +55,7 @@ func NewApplication(modeparam string) *fiber.App {
         r = router.NewHttpRouter()
         r.InstallRouter(app)
         return app
+
   }
   
 }
