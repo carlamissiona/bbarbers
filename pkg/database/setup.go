@@ -9,11 +9,19 @@ import (
 	"os"
 	_ "os"
 
-	_"github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 func OpeDatabase() *sql.DB {
+
+	err := godotenv.Load(".env")
+
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	  }
+	
 	
     urldb := os.Getenv("POSTGRES_URL")
 	Database, err := sql.Open("postgres", urldb)

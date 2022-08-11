@@ -16,7 +16,7 @@ import (
 func NewApplication(modeparam string) *fiber.App {
   if modeparam == "api" {
      
-         app := fiber.New()
+        app := fiber.New()
         
         
         web := app.Group("v1")
@@ -30,7 +30,6 @@ func NewApplication(modeparam string) *fiber.App {
     }else{
 
         engine := html.New("./templates", ".html")
-        
         
         app := fiber.New(fiber.Config{Views: engine})
         app.Static("/", "./assets")

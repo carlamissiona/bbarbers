@@ -11,8 +11,6 @@ func main() {
     
 	if len(os.Args) == 2 {
         if os.Args[1] == "monolith" {
-			
-
 			app := bootstrap.NewApplication("monolith")  
 			log.Fatal(app.Listen(":5000"))
 
